@@ -1,0 +1,64 @@
+*************************************************************
+API host docs and urls:
+https://exchangerate.host/#/
+https://exchangerate.host/#/#docs
+https://api.exchangerate.host/latest
+
+
+from host:
+https://api.exchangerate.host/convert?from=EUR&to=ILS
+https://api.exchangerate.host/convert?from=USD&to=ILS
+https://api.exchangerate.host/convert?from=PLN&to=ILS
+
+From app:
+http://localhost:5000/ExchangeRate/USD/ILS
+http://localhost:5000/ExchangeRate/EUR/ILS
+http://localhost:5000/ExchangeRate/PLN/ILS
+
+
+Development Steps:
+
+1. check the required API objects that we want from host - https://api.exchangerate.host/convert?from=USD&to=ILS
+
+2. create ServiceSettings.cs for the API host 
+
+3. Set the API host in appsettings.json
+
+ "ServiceSettings": {
+    "ExchangeRateHost": "api.exchangerate.host"
+  },
+
+4. dependency injection in Startup.cs under ConfigureServices, so the app will find the configuration settings in appsettings.json when it is loaded
+
+    services.Configure<ServiceSettings>(Configuration.GetSection(nameof(ServiceSettings)));
+
+5. Create WeatherClient.cs to acess the API host using IHttpClient
+
+6. Use record objects in WeatherClient.cs to grab the objects that we want
+
+7. Create method "GetExchangeRateAsync" in WeatherClient.cs to call and retrieve information based on "from currency" (USD) and "to currency" (ILS) 
+
+8. dependency injection in Startup.cs under ConfigureServices, so "ExchangeRateClient" class will be registered into the services collection and the app will know that it needs to inject an HttpClient object into that class so that we can do the actual call to the external service
+  
+    services.AddHttpClient<ExchangeRateClient>();
+
+9. ExchangeRateController.cs to get the curreny parameter (ILS) and return the rate in Dollar
+
+10. Create ExchangeRate.cs to define properties that we want to retrieve
+
+11. Add Route and add asybc call to the API host from ExchangeRateClient.cs "GetExchangeRateAsync" with parameters "from" and "to" for USD or ILS
+
+[HttpGet]
+        [Route("{to}")]
+        public async Task<ExchangeRate> Get(string to)
+        {
+            var getrate = await client.GetExchangeRateAsync(to);
+
+            return new ExchangeRate
+            {
+               // FromCurrency = rate.query[0].from,
+                Rate = (float)getrate.result,
+                Date = getrate.date,
+                From = getrate.query.from,
+                To = getrate.query.to
+            };
