@@ -1,6 +1,3 @@
-# Deploy .NET Core Web application with MSSQL to Azure Kubernetes Cluster (AKS) Using Terraform Step by Step
-The deployment requires .Net core 3.1, Entity Framework Core, Visual Studio Code, Terraform and Git.
+# Example of Web API using free external host provides currency exchange rate (KEY does not require)
+The deployment requires .Net5 SDK and Visual Studio Code.
 
-The example contains kubernetes components like deployments,
-pods, services, replicaset, secrets, persistent volume, ingress and
-prometheus. Instructions are located in Documents folder.
