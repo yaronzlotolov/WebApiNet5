@@ -30,7 +30,7 @@ namespace ExchangeRate.Controllers
             {
                // FromCurrency = rate.query[0].from,
                 Rate = (float)getrate.result,
-                Date = getrate.date,
+                Date = DateTime.Parse(getrate.date).ToString("dd-MM-yyyy"),
                 From = getrate.query.from,
                 To = getrate.query.to
             };
